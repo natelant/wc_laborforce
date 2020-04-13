@@ -1,0 +1,85 @@
+---
+title: "Odds Ratios"
+author: "Nate Lant"
+date: "4/6/2020"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+mydata <- read_rds("data/mydata.rds")
+```
+
+### Liklihood and Odds ratios
+
+```{r}
+# odds table
+odds_table <- mydata %>%
+  group_by(wheelchair, worker) %>%
+  summarise(population = sum(wtperfin)) %>%
+  spread(wheelchair, population)
+```
+
+```{r}
+odds_table %>%
+  select(-worker) %>%
+  as.matrix() %>%
+  questionr::odds.ratio()
+```
+
+
+### Other explanitory variables
+
+It seems convincing that being limited to a wheelchair has an effect on worker status,
+but could the same effect be traced to other variables like educational attainment or 
+age?
+
+```{r, message=F, warning=F}
+# age density plot for wheelchair
+mydata %>%
+  ggplot(aes(r_age, fill = as_factor(wheelchair))) + geom_density(alpha = 0.2)
+# age density for worker
+mydata %>%
+  ggplot(aes(r_age, fill = as_factor(worker))) + geom_density(alpha = 0.2)
+# looks like old people are unemployed...
+
+
+# plot education
+mydata %>%
+  group_by(educ, wheelchair) %>%
+  summarise(population = sum(wtperfin)) %>%
+  group_by(wheelchair) %>%
+  mutate(distribution = population/sum(population)) %>%
+  
+  ggplot(aes(x = as_factor(educ), y = distribution)) +
+  geom_col(aes(fill = as_factor(wheelchair)), colour = "Black", position = "dodge") +
+    ggtitle("Educational Attainment and Wheelchair Usage") +
+    labs(x = "Educational Attainment", y = "Distribution") +
+    scale_fill_brewer(palette = "PuBuGn", direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))
+
+# plot income
+mydata %>%
+  filter(hhfaminc != "-9") %>%
+  group_by(hhfaminc, wheelchair) %>%
+  summarise(population = sum(wtperfin)) %>%
+  group_by(wheelchair) %>%
+  mutate(distribution = population/sum(population)) %>%
+  
+  ggplot(aes(x = as_factor(hhfaminc), y = distribution)) +
+  geom_col(aes(fill = as_factor(wheelchair)), colour = "Black", position = "dodge") +
+    ggtitle("Income and Wheelchair Usage") +
+    labs(x = "Income", y = "Distribution") +
+    scale_fill_brewer(palette = "PuBuGn", direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))
+```
+
+
+

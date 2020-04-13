@@ -1,0 +1,8 @@
+name: "Effect of Wheelchair Use in the Labor Force"
+navbar:
+  title: "512 Final Project"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About"
+      href: about.html
