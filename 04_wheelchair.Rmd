@@ -1,0 +1,65 @@
+---
+title: "Effect of Wheelchair Use"
+author: "Nate Lant and Austin Hopkins"
+date: "4/14/2020"
+output: 
+  html_document:
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+
+mydata1 <- read_rds("data/mydata.rds") %>%
+  mutate(age_bar = ifelse(r_age > 55, 1, 0))
+```
+
+This section compares different models in predicting the likelihood of employment for users
+with wheelchairs. The response variable is the `worker` variable which is employment status, 0 
+for unemployed and 1 for employed.
+
+
+
+At the most basic level, the binomial regression is the same as the odds ratio. The logit is $z$ in 
+$$  z = \beta_0 + \beta_1*x_1 $$
+
+The odds ratio can be calculated using $e^\beta$. This is not to be confused with the odds,
+defined as $e^z$. With odds, we can calculate the probability of getting employed as
+
+$$ P = \frac{e^z}{1+e^z}$$
+
+## Reduced Model
+
+The first model will regress worker status on wheelchair usage. This model will calculate the 
+odds of employment if you have a wheelchair compared to not having a wheelchair (odds ratio).
+
+```{r reduced}
+glm(worker ~ wheelchair, data = mydata1, family = binomial(link='logit')) %>%
+  summary()
+```
+
+In this case, $e^(-2.976)$ is 0.051, or 1:20. This states that if you have a wheelchair, you 
+are 20 times more likely to be unemployed. Lets see how this changes with interactions.
+
+
+## Full Model
+
+```{r full}
+glm(worker ~ educ*wheelchair + r_sex*wheelchair + log(inc_cont)*wheelchair + age_bar*wheelchair, 
+    data = mydata1, family = "binomial") %>%
+  summary()
+```
+
+This shows for example the odds ratio of a wheelchair user who attained education level 5
+(graduate or professional degree) is $e^(-3.03+1.03+1.175)$ = `r exp(-3.03+1.03+1.175)%>%round(3)`.
+
+This shows that education (with the exception of graduate school) does not affect employment for
+wheelchair users any differently than for non wheelchair users.
+
+
+
+
+
+
