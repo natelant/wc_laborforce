@@ -18,9 +18,10 @@ mydata <- read_rds("data/mydata.rds")
 ```
 
 ## Summary
-It is obvious that by having a wheelchair, liklihood of unemployment is much greater. However, 
-other variables may be the cause of unemployment. Below is a summary table of the other variables 
-we will consider in our model.
+There are multiple variables from the NHTS data set that might effect employment instead of disability
+status. However, we want to see if wheelchair users are effected differently than disability in 
+general. Below is a summary table of the other variables we will consider in our model. Table 1 
+compares the disabled population and Table 2 compares the wheelchair user population.
 
 ```{r summary}
 #summary table of disabled population
@@ -88,7 +89,7 @@ that, likelihood tends to decrease. This would result in a negative quadtratic t
 For our study, we will use age as a categorical term. In fact, we can make it a binary term
 as either older than a certain age (1) or younger than that age (0). To find the ideal age to 
 set the binary variable, we ran a binary logistic regression model at every age and graphed the 
-coefficients with both the main effect and the interaction term. 
+coefficients with both the main effect and the interaction term. We will set the bar at 55 years.
 
 ```{r loop, message=F, warning=F}
 # turns age into a binary variable: older than x, 0 or 1
@@ -125,7 +126,7 @@ dplyr::bind_rows(coefficients) %>%
               alpha = 0.2) +
   geom_line(aes(color = interaction, linetype = interaction)) + 
   scale_color_manual(values = c("darkred", "steelblue")) +
-  ggtitle("DAP ~ 1| age_bar", 
+  ggtitle("Worker ~ wheelchair * age_bar", 
           subtitle = "Likelihood for employment OLDER than given age") +
   ylab("Coefficient") +
   xlab("Age")

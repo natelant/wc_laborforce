@@ -325,7 +325,7 @@ $(document).ready(function () {
 
 <div id="summary" class="section level2">
 <h2>Summary</h2>
-<p>It is obvious that by having a wheelchair, liklihood of unemployment is much greater. However, other variables may be the cause of unemployment. Below is a summary table of the other variables we will consider in our model.</p>
+<p>There are multiple variables from the NHTS data set that might effect employment instead of disability status. However, we want to see if wheelchair users are effected differently than disability in general. Below is a summary table of the other variables we will consider in our model. Table 1 compares the disabled population and Table 2 compares the wheelchair user population.</p>
 <pre class="r"><code>#summary table of disabled population
 mydata %&gt;%
   group_by(worker, disability) %&gt;%
@@ -341,8 +341,8 @@ mydata %&gt;%
   mutate(dist = percent(count/sum(count), accuracy = 0.1)) %&gt;%
   select(-count) %&gt;%
   datatable()</code></pre>
-<div id="htmlwidget-ada54765017aa0a52376" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ada54765017aa0a52376">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[29304,7722,100724,2160],[50.4451269451269,53.4255374255374,45.833316786466,50.3263888888889],[62500,20000,87500,62500],[0.342274092274092,0.422299922299922,0.504785354036774,0.419444444444444],[0,0,0.120914578452007,0.179166666666667],[0.732596232596233,0.543512043512044,0.833078511576188,0.750925925925926],[0.430657930657931,0.344988344988345,0.476569635836543,0.450462962962963],["19.4%","5.8%","73.4%","1.4%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>disability<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-413568d9a479fa22f6ab" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-413568d9a479fa22f6ab">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[29304,7722,100724,2160],[50.4451269451269,53.4255374255374,45.833316786466,50.3263888888889],[62500,20000,87500,62500],[0.342274092274092,0.422299922299922,0.504785354036774,0.419444444444444],[0,0,0.120914578452007,0.179166666666667],[0.732596232596233,0.543512043512044,0.833078511576188,0.750925925925926],[0.430657930657931,0.344988344988345,0.476569635836543,0.450462962962963],["19.4%","5.8%","73.4%","1.4%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>disability<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code># summary table of wheelchair usage
 mydata %&gt;%
   group_by(worker, wheelchair) %&gt;%
@@ -358,8 +358,8 @@ mydata %&gt;%
   mutate(dist = percent(count/sum(count), accuracy = 0.1)) %&gt;%
   select(-count) %&gt;%
   datatable()</code></pre>
-<div id="htmlwidget-6f79818f2b75c7832445" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6f79818f2b75c7832445">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[35868,1158,102715,169],[50.9671294747407,54.1511226252159,45.9180645475344,51.7514792899408],[62500,30000,87500,62500],[0.357756217240995,0.396373056994819,0.503159226987295,0.402366863905325],[0,0,0.121919875383342,0.254437869822485],[0.698449871751979,0.529360967184801,0.831436499050772,0.781065088757396],[0.414603546336567,0.356649395509499,0.476103782310276,0.42603550295858],["24.4%","0.8%","74.7%","0.1%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>wheelchair<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-f4ce458c3edee26ad334" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f4ce458c3edee26ad334">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[35868,1158,102715,169],[50.9671294747407,54.1511226252159,45.9180645475344,51.7514792899408],[62500,30000,87500,62500],[0.357756217240995,0.396373056994819,0.503159226987295,0.402366863905325],[0,0,0.121919875383342,0.254437869822485],[0.698449871751979,0.529360967184801,0.831436499050772,0.781065088757396],[0.414603546336567,0.356649395509499,0.476103782310276,0.42603550295858],["24.4%","0.8%","74.7%","0.1%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>wheelchair<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="age" class="section level2">
 <h2>Age</h2>
@@ -377,7 +377,7 @@ mydata %&gt;%
   ggtitle(&quot;Wheelchair Status Distribution&quot;, subtitle = &quot;Wheelchair Usage for Every Age&quot;)</code></pre>
 <p><img src="02_variables_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Age is a continuous variable and is often used as a quadratic term. For example, likelihood of employment increases as you get older, lets say to about 50, but then for every year after that, likelihood tends to decrease. This would result in a negative quadtratic term.</p>
-<p>For our study, we will use age as a categorical term. In fact, we can make it a binary term as either older than a certain age (1) or younger than that age (0). To find the ideal age to set the binary variable, we ran a binary logistic regression model at every age and graphed the coefficients with both the main effect and the interaction term.</p>
+<p>For our study, we will use age as a categorical term. In fact, we can make it a binary term as either older than a certain age (1) or younger than that age (0). To find the ideal age to set the binary variable, we ran a binary logistic regression model at every age and graphed the coefficients with both the main effect and the interaction term. We will set the bar at 55 years.</p>
 <pre class="r"><code># turns age into a binary variable: older than x, 0 or 1
 coefficients &lt;- list()
 
@@ -412,7 +412,7 @@ dplyr::bind_rows(coefficients) %&gt;%
               alpha = 0.2) +
   geom_line(aes(color = interaction, linetype = interaction)) + 
   scale_color_manual(values = c(&quot;darkred&quot;, &quot;steelblue&quot;)) +
-  ggtitle(&quot;DAP ~ 1| age_bar&quot;, 
+  ggtitle(&quot;Worker ~ wheelchair * age_bar&quot;, 
           subtitle = &quot;Likelihood for employment OLDER than given age&quot;) +
   ylab(&quot;Coefficient&quot;) +
   xlab(&quot;Age&quot;)</code></pre>

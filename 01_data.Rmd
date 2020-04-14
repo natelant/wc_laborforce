@@ -16,17 +16,21 @@ library(scales)
 library(pander)
 ```
 
+In this study, we will compare the effect of disability status and wheelchair status on
+worker status. We will use binomial regression and a data set from the 2017 National Household
+Travel Survey (NHTS). 
+
 ## The National Household Travel Survey
-The National Household Travel Survey (NHTS) is conducted every 8-10 years or so,
+The NHTS is conducted every 8-10 years or so,
 and samples nearly 300,000 americans to understand travel behavior. Each person
 answers questions about themselves and their household (i.e. employment status, 
 income, age, gender
 etc.) and records information on their travel behavior each day of the study.
 
-Each respondant is asked if they have any kind of disability that limits their
+Each respondant is also asked if they have any kind of disability that limits their
 transportation. If they respond yes, then they are asked which kinds of medical 
 devices they use (i.e. wheelchair, cane, seeing eye dog, etc.). From these 
-responses, we can label each person as wheelchair dependent or not.
+responses, we can label each person as disabled, wheelchair dependent, or neither.
 
 ```{r data_cleaning, eval=F}
 mydata <- nhts_persons %>%
@@ -74,9 +78,9 @@ mydata %>% write_rds("data/mydata.rds")
 ```
 
 ## Wheelchair Status and Labor Force Participation
-This study will evaluate the effect of being limited to a wheelchair on participation in
+This study will evaluate the effect of being disabled or limited to a wheelchair on participation in
 the labor force. As shown in the figure below, there is a major imbalance in the number of
-individuals limited to a wheelchair who are employed versus unemployed, 
+individuals who are disabled or limited to a wheelchair who are employed versus unemployed, 
 but could that be because of their age or because of their educational 
 attainment level, instead of their dependence to a wheelchair? We will use logistic regression
 and control for multiple variables to see how wheelchair useage affects employment. We will then 
@@ -86,6 +90,21 @@ compare these effects to the effect of disability in general on the labor force.
 # show plot of distribution (worker and wheelchair)
 mydata <- read_rds("data/mydata.rds")
 
+# comparison for disability status
+mydata %>%
+  group_by(worker, disability) %>%
+  summarise(population = sum(wtperfin)) %>%
+  group_by(disability) %>%
+  mutate(distribution = population/sum(population)) %>%
+  ggplot(aes(x = as.character(disability), y = distribution)) +
+  geom_col(aes(fill = as.character(worker)), colour = "Black", position = "dodge") +
+    ggtitle("Distribution of Worker Status and Disability Status") +
+    labs(x = "Wheelchair Usage (1 = yes)", y = "Distribution") +
+    scale_fill_brewer(palette = "PuBuGn", direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))
+
+# comparison for wheelchair users
 mydata %>%
   group_by(worker, wheelchair) %>%
   summarise(population = sum(wtperfin)) %>%
@@ -100,7 +119,8 @@ mydata %>%
             element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))
 ```
 
-It is obvious that by having a wheelchair, liklihood of unemployment is much greater. However, 
+It is obvious that by having a wheelchair or any kind of travel limiting disability, 
+the liklihood of unemployment is much greater. However, 
 other variables may be the cause of unemployment. Below is a summary table of the other variables 
 we will consider in our model. The first compares the disabled population to the abled population,
 the second table compares the wheelchair user population to the able bodied population.

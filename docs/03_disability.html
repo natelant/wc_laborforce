@@ -321,11 +321,11 @@ $(document).ready(function () {
 <p>We performed a GLM with a Logit Link looking at the effect of having a travel limiting disability combined with education, sex, age, and income have on subjects participation in the workforce.</p>
 <p>Our results showed that all the effects were extremely significant.</p>
 <p>Our main goal is understanding the odds of being disabled have on being able to work. So to explore further we did a nominal logistic regression.</p>
-<p><img src="images/effectsummary2.PNG" /></p>
+<p><img src="images/newnom.PNG" /></p>
+<p><img src="images/parameterestimates3.PNG" /></p>
 <p>You can see that all the effects and interactions in the nominal logistic regression were significant with p values of almost all &lt;0.00001</p>
-<p><img src="images/parameterestimates2.PNG" /></p>
 <p>You can see that disability which is a binary response is significant, as well as all variable interactions with disability.</p>
-<p><img src="images/odds1.PNG" /> <img src="images/odds2.PNG" /> <img src="images/odds3.PNG" /></p>
+<p><img src="images/oddsratio.PNG" /></p>
 <p>Normal approximations used for ratio confidence limits effects: disability educ r_sex Tests and confidence intervals on odds ratios are Wald based.</p>
 <p>You can clearly see that if a subject has a travel limiting disability they are 5.6 times more likely to not be in the workforce than if they did not have the travel limiting disability. This comes with a prob&gt;Chisq of &lt;0.0001 so quite a significant odds ratio.</p>
 <p>This dataset includes other variables that we weren’t initially interested in. A total of nine variables could be used to explain workforce participation. So we performed a principle components analysis to see if there was a more straightforward way of explaining the response.</p>
@@ -343,12 +343,12 @@ $(document).ready(function () {
 <p>Scree plot showing the eigenvalues. The first six are all fairly similar with the first two components especially having higher values.</p>
 <p><img src="images/blue.PNG" /></p>
 <p>Formula for principle component analysis. It seems largely based on wheelchair, disability, family income and education.</p>
-<p><img src="images/nominallog.PNG" /></p>
+<p><img src="images/newnom.PNG" /></p>
 <p><img src="images/parameterestimates3.PNG" /></p>
 <p><img src="images/oddsratio.PNG" /></p>
 <p>We did a nominal linear regression with the six principle components. We found that all the components were significant.</p>
 <p>Looking at the first component, per unit change in PC1 subjects are 0.5 times more likely to not be in the workforce. PC2 says per each unit change subjects are 2.07 times more likely to not be in the workforce.</p>
-<p>This analysis was interesting but is not as clear cut as we would have hoped.</p>
+<p>This analysis was interesting but is not as clear cut as we would have hoped. We found that income isn’t significant and age is barely significant.</p>
 
 
 
