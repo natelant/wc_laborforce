@@ -1,8 +1,13 @@
-name: "Effect of Wheelchair Use in the Labor Force"
+name: "Effect of Wheelchair Use vs Disability in the Labor Force"
 navbar:
   title: "512 Final Project"
   left:
-    - text: "Home"
-      href: index.html
-    - text: "About"
-      href: about.html
+    - text: "Introduction"
+      href: 01_data.html
+    - text: "Variable Comparison"
+      href: 02_variables.html
+    - text: "Disability Effect"
+      href: 03_disability.html
+    - text: "Wheelchair Effect"
+      href: 04_wheelchair.html
+    
