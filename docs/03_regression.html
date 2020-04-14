@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Nate Lant" />
+
+
+<title>Regression</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">512 Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_data.html">Data</a>
+</li>
+<li>
+  <a href="02_oddsratio.html">Odds Ratio</a>
+</li>
+<li>
+  <a href="03_regression.html">Regression</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Regression</h1>
+<h4 class="author">Nate Lant</h4>
+<h4 class="date">4/6/2020</h4>
+
+</div>
+
+
+<div id="reduced-model" class="section level2">
+<h2>Reduced Model</h2>
+<p>At the most basic level, the binomial regression is the same as the odds ratio. The logit is <span class="math inline">\(z\)</span> in <span class="math display">\[  z = \beta_0 + \beta_1*x_1 \]</span></p>
+<p>The odds ratio can be calculated using <span class="math inline">\(e^\beta\)</span>. This is not to be confused with the odds, defined as <span class="math inline">\(e^z\)</span></p>
+<pre class="r"><code>glm(worker ~ wheelchair, data = mydata1, family = binomial(link=&#39;logit&#39;)) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ wheelchair, family = binomial(link = &quot;logit&quot;), 
+##     data = mydata1)
+## 
+## Deviance Residuals: 
+##    Min      1Q  Median      3Q     Max  
+## -1.644  -1.644   0.774   0.774   2.030  
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  1.052113   0.006133  171.54   &lt;2e-16 ***
+## wheelchair  -2.976664   0.082573  -36.05   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 159501  on 139908  degrees of freedom
+## AIC: 159505
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>The usefulness of the model is that we can include more variables in the logit model.</p>
+</div>
+<div id="full-model" class="section level2">
+<h2>Full Model</h2>
+<pre class="r"><code>glm(worker ~ wheelchair + educ + r_sex + log(inc_cont) + msasize + r_race, 
+    data = mydata1, family = &quot;binomial&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ wheelchair + educ + r_sex + log(inc_cont) + 
+##     msasize + r_race, family = &quot;binomial&quot;, data = mydata1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.2934  -0.8572   0.6082   0.7642   2.8002  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -5.322495   0.088245 -60.315  &lt; 2e-16 ***
+## wheelchair    -2.572083   0.085197 -30.190  &lt; 2e-16 ***
+## educ02         0.468227   0.036189  12.938  &lt; 2e-16 ***
+## educ03         0.692229   0.035640  19.423  &lt; 2e-16 ***
+## educ04         0.921706   0.036818  25.034  &lt; 2e-16 ***
+## educ05         1.069728   0.037972  28.172  &lt; 2e-16 ***
+## r_sex02       -0.625086   0.013206 -47.333  &lt; 2e-16 ***
+## log(inc_cont)  0.541558   0.007922  68.360  &lt; 2e-16 ***
+## msasize02     -0.049156   0.025447  -1.932 0.053402 .  
+## msasize03      0.054934   0.023152   2.373 0.017656 *  
+## msasize04      0.064071   0.023121   2.771 0.005586 ** 
+## msasize05      0.006466   0.020236   0.320 0.749310    
+## msasize06     -0.044643   0.022783  -1.960 0.050054 .  
+## r_race02       0.115575   0.023892   4.837 1.32e-06 ***
+## r_race03      -0.187200   0.029143  -6.423 1.33e-10 ***
+## r_race04       0.029064   0.074095   0.392 0.694870    
+## r_race05      -0.052328   0.117384  -0.446 0.655751    
+## r_race06      -0.052508   0.037657  -1.394 0.163204    
+## r_race97       0.133523   0.039971   3.341 0.000836 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 147082  on 139891  degrees of freedom
+## AIC: 147120
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>glm(worker ~ wheelchair + educ + r_sex + log(inc_cont), 
+    data = mydata1, family = &quot;binomial&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ wheelchair + educ + r_sex + log(inc_cont), 
+##     family = &quot;binomial&quot;, data = mydata1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.2104  -0.8474   0.6106   0.7565   2.7883  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -5.241759   0.084140  -62.30   &lt;2e-16 ***
+## wheelchair    -2.566700   0.085148  -30.14   &lt;2e-16 ***
+## educ02         0.460377   0.036008   12.79   &lt;2e-16 ***
+## educ03         0.683978   0.035412   19.32   &lt;2e-16 ***
+## educ04         0.907634   0.036542   24.84   &lt;2e-16 ***
+## educ05         1.050884   0.037690   27.88   &lt;2e-16 ***
+## r_sex02       -0.623684   0.013193  -47.27   &lt;2e-16 ***
+## log(inc_cont)  0.536035   0.007664   69.94   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 147202  on 139902  degrees of freedom
+## AIC: 147218
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>glm(worker ~ educ*wheelchair + r_sex*wheelchair, 
+    data = mydata1, family = &quot;binomial&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ educ * wheelchair + r_sex * wheelchair, 
+##     family = &quot;binomial&quot;, data = mydata1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.0450  -0.9721   0.6951   0.7696   2.5761  
+## 
+## Coefficients:
+##                    Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)         0.15818    0.03252   4.864 1.15e-06 ***
+## educ02              0.76327    0.03476  21.958  &lt; 2e-16 ***
+## educ03              1.13909    0.03391  33.590  &lt; 2e-16 ***
+## educ04              1.56963    0.03449  45.513  &lt; 2e-16 ***
+## educ05              1.80106    0.03536  50.939  &lt; 2e-16 ***
+## wheelchair         -3.30291    0.42594  -7.754 8.87e-15 ***
+## r_sex02            -0.66250    0.01297 -51.068  &lt; 2e-16 ***
+## educ02:wheelchair  -0.08730    0.45772  -0.191  0.84874    
+## educ03:wheelchair  -0.03632    0.44420  -0.082  0.93483    
+## educ04:wheelchair   0.55698    0.45537   1.223  0.22128    
+## educ05:wheelchair   0.88793    0.46294   1.918  0.05511 .  
+## wheelchair:r_sex02  0.52593    0.17630   2.983  0.00285 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 152160  on 139898  degrees of freedom
+## AIC: 152184
+## 
+## Number of Fisher Scoring iterations: 5</code></pre>
+<p>Education does not affect employment for wheelchair users any differently than for wheelchair users.</p>
+</div>
+<div id="interactions" class="section level2">
+<h2>Interactions</h2>
+<pre class="r"><code>glm(worker ~ wheelchair*poly(r_age, 2, raw=T), 
+    data = mydata1, family = &quot;binomial&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ wheelchair * poly(r_age, 2, raw = T), 
+##     family = &quot;binomial&quot;, data = mydata1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9297  -1.1458   0.6154   0.7650   2.2799  
+## 
+## Coefficients:
+##                                       Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept)                         -2.880e+00  1.094e-01 -26.337   &lt;2e-16
+## wheelchair                          -2.234e+00  1.811e+00  -1.234    0.217
+## poly(r_age, 2, raw = T)1             2.318e-01  5.012e-03  46.246   &lt;2e-16
+## poly(r_age, 2, raw = T)2            -2.937e-03  5.434e-05 -54.050   &lt;2e-16
+## wheelchair:poly(r_age, 2, raw = T)1 -5.604e-02  7.782e-02  -0.720    0.471
+## wheelchair:poly(r_age, 2, raw = T)2  8.237e-04  8.119e-04   1.015    0.310
+##                                        
+## (Intercept)                         ***
+## wheelchair                             
+## poly(r_age, 2, raw = T)1            ***
+## poly(r_age, 2, raw = T)2            ***
+## wheelchair:poly(r_age, 2, raw = T)1    
+## wheelchair:poly(r_age, 2, raw = T)2    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 151433  on 139904  degrees of freedom
+## AIC: 151445
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>glm(worker ~ wheelchair*msasize, 
+    data = mydata1, family = &quot;binomial&quot;) %&gt;%
+  summary()</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = worker ~ wheelchair * msasize, family = &quot;binomial&quot;, 
+##     data = mydata1)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7076  -1.5363   0.7303   0.8064   2.2634  
+## 
+## Coefficients:
+##                      Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)           0.94298    0.01508  62.521  &lt; 2e-16 ***
+## wheelchair           -2.66849    0.17446 -15.296  &lt; 2e-16 ***
+## msasize02             0.01368    0.02430   0.563   0.5734    
+## msasize03             0.11471    0.02209   5.193 2.07e-07 ***
+## msasize04             0.24244    0.02202  11.008  &lt; 2e-16 ***
+## msasize05             0.25003    0.01899  13.170  &lt; 2e-16 ***
+## msasize06            -0.13000    0.02172  -5.985 2.17e-09 ***
+## wheelchair:msasize02 -0.23408    0.32709  -0.716   0.4742    
+## wheelchair:msasize03 -0.40728    0.29093  -1.400   0.1615    
+## wheelchair:msasize04 -0.13241    0.25888  -0.511   0.6090    
+## wheelchair:msasize05 -0.37035    0.24547  -1.509   0.1314    
+## wheelchair:msasize06 -0.62560    0.28260  -2.214   0.0268 *  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 161696  on 139909  degrees of freedom
+## Residual deviance: 158963  on 139898  degrees of freedom
+## AIC: 158987
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+</div>
+<div id="binary-age-coefficient-plot" class="section level2">
+<h2>Binary Age Coefficient Plot</h2>
+<pre class="r"><code># turns age into a binary variable: older than x, 0 or 1
+coefficients &lt;- list()
+
+for(i in 30:63){
+  # munging
+  df &lt;- mydata1 %&gt;%
+    mutate(age_bar = ifelse(r_age &gt; i, T, F))
+  # Estimate model
+  
+  fit &lt;- glm(worker ~ wheelchair*age_bar, data = df, family = &quot;binomial&quot;) %&gt;%
+    summary()
+  
+  out_element &lt;- list(
+    &quot;i&quot; = i,
+    #M:age_barTRUE (coef represents liklihood to take M trip if over age i)
+    &quot;coefficient_c&quot; = fit$coefficients[3, 1],
+    &quot;coefficient_int&quot; = fit$coefficients[4, 1],
+    &quot;stderror_c&quot; = fit$coefficients[3, 2],
+    &quot;stderror_int&quot; = fit$coefficients[4, 2]
+  )
+  
+  coefficients[[i]] &lt;- out_element
+}
+
+dplyr::bind_rows(coefficients) %&gt;%
+  gather(variable, value, -i) %&gt;%
+  separate(variable, c(&quot;type&quot;, &quot;interaction&quot;)) %&gt;%
+  spread(type, value) %&gt;%
+  ggplot(aes(x = i, y = coefficient, group = interaction)) +
+  geom_ribbon(aes(ymin = coefficient - 1.96 * stderror,
+                  ymax = coefficient + 1.96*stderror),
+              alpha = 0.2) +
+  geom_line(aes(color = interaction, linetype = interaction)) + 
+  scale_color_manual(values = c(&quot;darkred&quot;, &quot;steelblue&quot;)) +
+  ggtitle(&quot;DAP ~ 1| age_bar&quot;, 
+          subtitle = &quot;Likelihood for employment OLDER than given age&quot;) +
+  ylab(&quot;Coefficient&quot;) +
+  xlab(&quot;Age&quot;)</code></pre>
+<p><img src="03_regression_files/figure-html/loop-1.png" width="672" /></p>
+<p>It shows that for wheelchair users, likelihood of employment increases with age. Well this might make sense because older people have wheelchairs…</p>
+<pre class="r"><code>mydata1 %&gt;%
+  filter(wheelchair == 1) %&gt;%
+  ggplot(aes(x = as_factor(worker), y = r_age)) +
+  geom_violin()</code></pre>
+<pre><code>## Don&#39;t know how to automatically pick scale for object of type haven_labelled. Defaulting to continuous.</code></pre>
+<p><img src="03_regression_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
