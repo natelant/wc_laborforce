@@ -44,6 +44,8 @@ as well as all variable interactions with disability.
 
 ![](images/oddsratio.PNG)
 
+![](images/excel.PNG)
+
 
 Normal approximations used for ratio confidence limits effects: 
 disability educ r_sex 

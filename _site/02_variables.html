@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Nate Lant and Austin Hopkins" />
+
+
+<title>Variable Comparison</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.10/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.19/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.19/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">512 Final Project</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="01_data.html">Introduction</a>
+</li>
+<li>
+  <a href="02_variables.html">Variable Comparison</a>
+</li>
+<li>
+  <a href="03_disability.html">Disability Effect</a>
+</li>
+<li>
+  <a href="04_wheelchair.html">Wheelchair Effect</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Variable Comparison</h1>
+<h4 class="author">Nate Lant and Austin Hopkins</h4>
+<h4 class="date">4/14/2020</h4>
+
+</div>
+
+
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p>There are multiple variables from the NHTS data set that might effect employment instead of disability status. However, we want to see if wheelchair users are effected differently than disability in general. Below is a summary table of the other variables we will consider in our model. Table 1 compares the disabled population and Table 2 compares the wheelchair user population.</p>
+<pre class="r"><code>#summary table of disabled population
+mydata %&gt;%
+  group_by(worker, disability) %&gt;%
+  summarise(respondents = n(),
+            count = sum(wtperfin),
+            av_age = mean(r_age),
+            median_inc = median(inc_cont),
+            male = mean(male),
+            wrk_home = mean(wrk_home),
+            college_plus = mean(college_plus),
+            pop_million = mean(pop_million)) %&gt;%
+  ungroup() %&gt;%
+  mutate(dist = percent(count/sum(count), accuracy = 0.1)) %&gt;%
+  select(-count) %&gt;%
+  datatable()</code></pre>
+<div id="htmlwidget-4f46608798b54c2e8e4a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4f46608798b54c2e8e4a">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[29304,7722,100724,2160],[50.4451269451269,53.4255374255374,45.833316786466,50.3263888888889],[62500,20000,87500,62500],[0.342274092274092,0.422299922299922,0.504785354036774,0.419444444444444],[0,0,0.120914578452007,0.179166666666667],[0.732596232596233,0.543512043512044,0.833078511576188,0.750925925925926],[0.430657930657931,0.344988344988345,0.476569635836543,0.450462962962963],["19.4%","5.8%","73.4%","1.4%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>disability<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<pre class="r"><code># summary table of wheelchair usage
+mydata %&gt;%
+  group_by(worker, wheelchair) %&gt;%
+  summarise(respondents = n(),
+            count = sum(wtperfin),
+            av_age = mean(r_age),
+            median_inc = median(inc_cont),
+            male = mean(male),
+            wrk_home = mean(wrk_home),
+            college_plus = mean(college_plus),
+            pop_million = mean(pop_million)) %&gt;%
+  ungroup() %&gt;%
+  mutate(dist = percent(count/sum(count), accuracy = 0.1)) %&gt;%
+  select(-count) %&gt;%
+  datatable()</code></pre>
+<div id="htmlwidget-dc9c5105857d3845d5b3" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-dc9c5105857d3845d5b3">{"x":{"filter":"none","data":[["1","2","3","4"],[0,0,1,1],[0,1,0,1],[35868,1158,102715,169],[50.9671294747407,54.1511226252159,45.9180645475344,51.7514792899408],[62500,30000,87500,62500],[0.357756217240995,0.396373056994819,0.503159226987295,0.402366863905325],[0,0,0.121919875383342,0.254437869822485],[0.698449871751979,0.529360967184801,0.831436499050772,0.781065088757396],[0.414603546336567,0.356649395509499,0.476103782310276,0.42603550295858],["24.4%","0.8%","74.7%","0.1%"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>worker<\/th>\n      <th>wheelchair<\/th>\n      <th>respondents<\/th>\n      <th>av_age<\/th>\n      <th>median_inc<\/th>\n      <th>male<\/th>\n      <th>wrk_home<\/th>\n      <th>college_plus<\/th>\n      <th>pop_million<\/th>\n      <th>dist<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="age" class="section level2">
+<h2>Age</h2>
+<p>For this study we considered only the population between 24 and 64. We are only interested in the population that is most likely looking for employment. Below are the comparisons of worker status, wheelchair status and disabitlity status against age, respectively.</p>
+<pre class="r"><code># age density for worker
+mydata %&gt;%
+  ggplot(aes(r_age, fill = as_factor(worker))) + geom_density(alpha = 0.2) +
+# looks like old people are unemployed...
+  ggtitle(&quot;Worker Status Distribution&quot;, subtitle = &quot;Employed and Unemployed for Every Age&quot;)</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>This clearly shows that unemployment increases with age.</p>
+<pre class="r"><code># age density for wheelchair users
+mydata %&gt;%
+  ggplot(aes(r_age, fill = as_factor(wheelchair))) + geom_density(alpha = 0.2) +
+  ggtitle(&quot;Wheelchair Status Distribution&quot;, subtitle = &quot;Wheelchair Usage for Every Age&quot;)</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Age is a continuous variable and is often used as a quadratic term. For example, likelihood of employment increases as you get older, lets say to about 50, but then for every year after that, likelihood tends to decrease. This would result in a negative quadtratic term.</p>
+<p>For our study, we will use age as a categorical term. In fact, we can make it a binary term as either older than a certain age (1) or younger than that age (0). To find the ideal age to set the binary variable, we ran a binary logistic regression model at every age and graphed the coefficients with both the main effect and the interaction term. We will set the bar at 55 years.</p>
+<pre class="r"><code># turns age into a binary variable: older than x, 0 or 1
+coefficients &lt;- list()
+
+for(i in 30:63){
+  # munging
+  df &lt;- mydata %&gt;%
+    mutate(age_bar = ifelse(r_age &gt; i, T, F))
+  # Estimate model
+  
+  fit &lt;- glm(worker ~ wheelchair*age_bar, data = df, family = &quot;binomial&quot;) %&gt;%
+    summary()
+  
+  out_element &lt;- list(
+    &quot;i&quot; = i,
+    #M:age_barTRUE (coef represents liklihood to take M trip if over age i)
+    &quot;coefficient_c&quot; = fit$coefficients[3, 1],
+    &quot;coefficient_int&quot; = fit$coefficients[4, 1],
+    &quot;stderror_c&quot; = fit$coefficients[3, 2],
+    &quot;stderror_int&quot; = fit$coefficients[4, 2]
+  )
+  
+  coefficients[[i]] &lt;- out_element
+}
+
+dplyr::bind_rows(coefficients) %&gt;%
+  gather(variable, value, -i) %&gt;%
+  separate(variable, c(&quot;type&quot;, &quot;interaction&quot;)) %&gt;%
+  spread(type, value) %&gt;%
+  ggplot(aes(x = i, y = coefficient, group = interaction)) +
+  geom_ribbon(aes(ymin = coefficient - 1.96 * stderror,
+                  ymax = coefficient + 1.96*stderror),
+              alpha = 0.2) +
+  geom_line(aes(color = interaction, linetype = interaction)) + 
+  scale_color_manual(values = c(&quot;darkred&quot;, &quot;steelblue&quot;)) +
+  ggtitle(&quot;Worker ~ wheelchair * age_bar&quot;, 
+          subtitle = &quot;Likelihood for employment OLDER than given age&quot;) +
+  ylab(&quot;Coefficient&quot;) +
+  xlab(&quot;Age&quot;)</code></pre>
+<p><img src="02_variables_files/figure-html/loop-1.png" width="672" /></p>
+<p>Does this trend make any sense? The interaction coefficient is an intercept point <span class="math inline">\(\beta*(wheelchair*age_{bar})\)</span> where <span class="math inline">\(age_{bar}\)</span> is either a 1 or a 0. Below is density plot of just employed workers. Yes, the trend seems to be true. More employed workers are above the age of 40.</p>
+<pre class="r"><code>mydata %&gt;%
+  filter(worker == 1) %&gt;%
+  ggplot(aes(r_age, fill = as_factor(wheelchair))) + geom_density(alpha = 0.2) +
+  ggtitle(&quot;Wheelchair Usage Distribution&quot;, subtitle = &quot;Only Emplyed Population (Worker == 1)&quot;)</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="educational-attainment" class="section level2">
+<h2>Educational Attainment</h2>
+<p>From looking at the distribution of educational attianment, there is a slight difference between the wheelchair user group to the disabled population group. Maybe education has a larger effect on the wheelchair user population than the disabled population.</p>
+<pre class="r"><code># disabilty
+mydata %&gt;%
+  group_by(educ, disability) %&gt;%
+  summarise(population = sum(wtperfin)) %&gt;%
+  group_by(disability) %&gt;%
+  mutate(distribution = population/sum(population)) %&gt;%
+  
+  ggplot(aes(x = as_factor(educ), y = distribution)) +
+  geom_col(aes(fill = as_factor(disability)), colour = &quot;Black&quot;, position = &quot;dodge&quot;) +
+    ggtitle(&quot;Educational Attainment and Disability Status&quot;) +
+    labs(x = &quot;Educational Attainment&quot;, y = &quot;Distribution&quot;) +
+    scale_fill_brewer(palette = &quot;PuBuGn&quot;, direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code># plot education
+mydata %&gt;%
+  group_by(educ, wheelchair) %&gt;%
+  summarise(population = sum(wtperfin)) %&gt;%
+  group_by(wheelchair) %&gt;%
+  mutate(distribution = population/sum(population)) %&gt;%
+  
+  ggplot(aes(x = as_factor(educ), y = distribution)) +
+  geom_col(aes(fill = as_factor(wheelchair)), colour = &quot;Black&quot;, position = &quot;dodge&quot;) +
+    ggtitle(&quot;Educational Attainment and Wheelchair Usage&quot;) +
+    labs(x = &quot;Educational Attainment&quot;, y = &quot;Distribution&quot;) +
+    scale_fill_brewer(palette = &quot;PuBuGn&quot;, direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+</div>
+<div id="income" class="section level2">
+<h2>Income</h2>
+<p>The comparison here between disability status and wheelchair usage status shows almost no difference. Both the disabled and wheelchair user populations seem to have lower incomes than the able bodied population. For our study we will use the log transform of the continuous variable for income.</p>
+<pre class="r"><code># plot income for disability
+mydata %&gt;%
+  filter(hhfaminc != &quot;-9&quot;) %&gt;%
+  group_by(hhfaminc, disability) %&gt;%
+  summarise(population = sum(wtperfin)) %&gt;%
+  group_by(disability) %&gt;%
+  mutate(distribution = population/sum(population)) %&gt;%
+  
+  ggplot(aes(x = as_factor(hhfaminc), y = distribution)) +
+  geom_col(aes(fill = as_factor(disability)), colour = &quot;Black&quot;, position = &quot;dodge&quot;) +
+    ggtitle(&quot;Income and Disability Status&quot;) +
+    labs(x = &quot;Income&quot;, y = &quot;Distribution&quot;) +
+    scale_fill_brewer(palette = &quot;PuBuGn&quot;, direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># plot income
+mydata %&gt;%
+  filter(hhfaminc != &quot;-9&quot;) %&gt;%
+  group_by(hhfaminc, wheelchair) %&gt;%
+  summarise(population = sum(wtperfin)) %&gt;%
+  group_by(wheelchair) %&gt;%
+  mutate(distribution = population/sum(population)) %&gt;%
+  
+  ggplot(aes(x = as_factor(hhfaminc), y = distribution)) +
+  geom_col(aes(fill = as_factor(wheelchair)), colour = &quot;Black&quot;, position = &quot;dodge&quot;) +
+    ggtitle(&quot;Income and Wheelchair Usage&quot;) +
+    labs(x = &quot;Income&quot;, y = &quot;Distribution&quot;) +
+    scale_fill_brewer(palette = &quot;PuBuGn&quot;, direction = 2) + 
+    theme(axis.text.x = 
+            element_text(size  = 10, angle = 45, hjust = 1, vjust = 1))</code></pre>
+<p><img src="02_variables_files/figure-html/unnamed-chunk-5-2.png" width="672" /></p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
