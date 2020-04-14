@@ -1,7 +1,7 @@
 ---
 title: "Introduction"
-author: "Nate Lant"
-date: "3/31/2020"
+author: "Nate Lant and Austin Hopkins"
+date: "4/14/2020"
 output: 
   html_document:
     code_folding: hide
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(nhts2017)
 library(scales)
-
+library(pander)
 ```
 
 ## The National Household Travel Survey
@@ -78,10 +78,9 @@ This study will evaluate the effect of being limited to a wheelchair on particip
 the labor force. As shown in the figure below, there is a major imbalance in the number of
 individuals limited to a wheelchair who are employed versus unemployed, 
 but could that be because of their age or because of their educational 
-attainment level, instead of their dependence to a wheelchair?
-
-Or we could ask, does being limited to a wheelchair affect employment more than simply
-being disabled?
+attainment level, instead of their dependence to a wheelchair? We will use logistic regression
+and control for multiple variables to see how wheelchair useage affects employment. We will then 
+compare these effects to the effect of disability in general on the labor force. 
 
 ```{r, message=F, warning=F}
 # show plot of distribution (worker and wheelchair)
@@ -103,36 +102,11 @@ mydata %>%
 
 It is obvious that by having a wheelchair, liklihood of unemployment is much greater. However, 
 other variables may be the cause of unemployment. Below is a summary table of the other variables 
-we will consider in our model.
-
-```{r summary}
-mydata %>%
-  group_by(worker, wheelchair) %>%
-  summarise(respondents = n(),
-            count = sum(wtperfin),
-            av_age = mean(r_age),
-            median_inc = median(inc_cont),
-            male = mean(male),
-            wrk_home = mean(wrk_home),
-            college_plus = mean(college_plus),
-            pop_million = mean(pop_million)) %>%
-  ungroup() %>%
-  mutate(dist = percent(count/sum(count), accuracy = 0.1)) %>%
-  select(-count)
-```
+we will consider in our model. The first compares the disabled population to the abled population,
+the second table compares the wheelchair user population to the able bodied population.
 
 
 
-```{r}
-mydata %>%
-  group_by(wheelchair, worker)%>%
-  tally() %>%
-  spread(wheelchair, n)
-
-mydata %>%
-  filter(worker == 1) %>%
-  ggplot(aes(r_age, fill = as_factor(wheelchair))) + geom_density(alpha = 0.2)
-```
 
 
 
